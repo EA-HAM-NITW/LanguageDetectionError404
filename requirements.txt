@@ -3,3 +3,4 @@ numpy
 transformers
 torch
 chromadb
+streamlit 
