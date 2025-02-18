@@ -2,9 +2,10 @@
 import librosa
 import numpy as np
 import torch
-from model import feature_extractor, model
+from transformers import AutoFeatureExtractor, AutoModelForAudioClassification
 
-
+feature_extractor = AutoFeatureExtractor.from_pretrained("facebook/mms-lid-4017")
+model = AutoModelForAudioClassification.from_pretrained("facebook/mms-lid-4017")
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model.to(device)
 
@@ -36,9 +37,3 @@ def check_language_match(audio_path, language_text):
     print("Predicted label:", predicted_label)
     # Compare predicted_label (e.g., "eng") with your target language text
     return "correct" if predicted_label.lower() == language_text.lower() else "false"
-
-if __name__ == "__main__":
-    test_audio_path = r'D:\All github projects\ForeignLanguagedetectionMLHAMweek\Japanese.mp3'
-    test_language = "jpn"  # or "jpn", "fra", etc.
-    result = check_language_match(test_audio_path, test_language)
-    print("Language match:", result)

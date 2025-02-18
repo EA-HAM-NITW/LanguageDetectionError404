@@ -1,6 +1,5 @@
-librosa
-numpy
-transformers
-torch
-chromadb
-streamlit 
+librosa==0.10.2.post1
+numpy==2.2.3
+streamlit==1.42.1
+torch==2.6.0
+transformers==4.49.0
