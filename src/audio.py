@@ -4,7 +4,7 @@ import numpy as np
 import torch
 from transformers import Wav2Vec2Processor, Wav2Vec2Model
 from numpy.linalg import norm
-from model import tokenizer, language_model
+from .model import tokenizer, model
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -41,8 +41,10 @@ def check_language_match(audio_path, language_text, threshold=0.8):
     # Text embedding (from XLM-RoBERTa or similar model)
     inputs = tokenizer(language_text, return_tensors="pt", padding=True, truncation=True)
     with torch.no_grad():
-        lang_outputs = language_model(**inputs)
-        language_embedding = lang_outputs.last_hidden_state.mean(dim=1).squeeze().numpy()
+        # Request hidden states from the model
+        lang_outputs = model(**inputs, output_hidden_states=True)
+        # Use the last hidden state to compute an average embedding:
+        language_embedding = lang_outputs.hidden_states[-1].mean(dim=1).squeeze().numpy()
     
     # Cosine similarity
     cos_sim = np.dot(audio_embedding, language_embedding) / (
@@ -50,8 +52,8 @@ def check_language_match(audio_path, language_text, threshold=0.8):
     )
     return "correct" if cos_sim >= threshold else "false"
 
-if __name__ == '__main__':
-    test_audio_path = "path/to/test_audio.wav"  # Replace with a valid audio file path.
-    test_language = "English"
-    result = check_language_match(test_audio_path, test_language)
-    print(f"Language match: {result}")
+#if __name__ == '__main__':
+    #test_audio_path = r"D:\All github projects\ForeignLanguagedetectionMLHAMweek\Japanese.mp3"  # Replace with a valid audio file path.
+   # test_language = "japanese"
+   # result = check_language_match(test_audio_path, test_language)
+   ## print(f"Language match: {result}")
