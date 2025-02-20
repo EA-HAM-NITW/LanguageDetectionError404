@@ -6,7 +6,6 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 OUT_DIR = os.path.join(ROOT_DIR, 'output/')
 RECORDING_DIR = os.path.join(OUT_DIR, 'recording')
-IMAGE_DIR = os.path.join(OUT_DIR, 'images')
 
 WAVE_OUTPUT_FILE = os.path.join(RECORDING_DIR, "recorded.wav")
 SPECTROGRAM_FILE = os.path.join(RECORDING_DIR, "spectrogram.png")

@@ -1,13 +1,5 @@
-# audio.py
 import librosa
 import numpy as np
-import torch
-from transformers import AutoFeatureExtractor, AutoModelForAudioClassification
-
-feature_extractor = AutoFeatureExtractor.from_pretrained("facebook/mms-lid-4017")
-model = AutoModelForAudioClassification.from_pretrained("facebook/mms-lid-4017")
-device = "cuda" if torch.cuda.is_available() else "cpu"
-model.to(device)
 
 def preprocess_audio(audio_path, target_sr=16000, target_duration=60):
     y, sr = librosa.load(audio_path, sr=target_sr)
@@ -20,20 +12,39 @@ def preprocess_audio(audio_path, target_sr=16000, target_duration=60):
         y = y[:target_length]
     return y, sr
 
-def get_predicted_language(audio_path):
-    audio_array, sr = preprocess_audio(audio_path)
-    inputs = feature_extractor(audio_array, sampling_rate=sr, return_tensors="pt")
-    # Move inputs to the same device as the model
-    inputs = {key: value.to(device) for key, value in inputs.items()}
-    with torch.no_grad():
-        outputs = model(**inputs)
-        logits = outputs.logits
-        predicted_id = logits.argmax(dim=-1).item()
-        predicted_label = model.config.id2label[predicted_id]
-    return predicted_label
+
+def get_predicted_language(audio_path: str) -> str:
+    """
+    Predict the language of the audio in the given file.
+
+    Args:
+        audio_path (str): Path to the audio file (preferably a mono WAV at 16 kHz).
+
+    Returns:
+        str: The predicted language label.
+    """ 
+    import whisper
+    model = whisper.load_model('tiny')
+
+    audio = whisper.load_audio(audio_path)
+    audio = whisper.pad_or_trim(audio)
+    
+    # Transcribe the audio; this will also perform language detection.
+    result = model.transcribe(audio, fp16=False)
+    predicted_language=result['language']
+    print(predicted_language)
+    return predicted_language
 
 def check_language_match(audio_path, language_text):
     predicted_label = get_predicted_language(audio_path)
     print("Predicted label:", predicted_label)
     # Compare predicted_label (e.g., "eng") with your target language text
     return "correct" if predicted_label.lower() == language_text.lower() else "false"
+
+
+if __name__ == "__main__":
+    audio_path = "data/test.wav"
+    location = r"C:\Users\Abhyuday Chauhan\PycharmProjects\LanguageDetectionError404\src\output\recording\recorded.wav"
+    import os
+    print(os.path.exists(location))
+    print(check_language_match(location, 'en'))
