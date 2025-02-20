@@ -12,39 +12,43 @@ def preprocess_audio(audio_path, target_sr=16000, target_duration=60):
         y = y[:target_length]
     return y, sr
 
+import whisper
 
 def get_predicted_language(audio_path: str) -> str:
     """
-    Predict the language of the audio in the given file.
-
+    Detect the language spoken in the audio file using OpenAI's Whisper tiny model.
+    
     Args:
-        audio_path (str): Path to the audio file (preferably a mono WAV at 16 kHz).
-
+        audio_path (str): Path to the audio file.
+    
     Returns:
-        str: The predicted language label.
-    """ 
-    import whisper
-    model = whisper.load_model('tiny')
-
+        str: Detected language code (e.g., 'en' for English, 'fr' for French).
+    """
+    # Load the tiny model
+    model = whisper.load_model("tiny")
+    
+    # Load and preprocess the audio file
+    # whisper.load_audio loads the file and resamples it to 16kHz.
     audio = whisper.load_audio(audio_path)
+    # Ensure the audio length is appropriate by padding or trimming it.
     audio = whisper.pad_or_trim(audio)
     
     # Transcribe the audio; this will also perform language detection.
     result = model.transcribe(audio, fp16=False)
-    predicted_language=result['language']
-    print(predicted_language)
+    
+    # Extract the language from the result dictionary.
+    predicted_language = result.get("language", "unknown")
+    
     return predicted_language
+
+# Example usage:
+if __name__ == "__main__":
+    audio_file = r"C:\Users\Abhyuday Chauhan\PycharmProjects\LanguageDetectionError404\src\output\recording\recorded.wav"
+    print("Predicted Language:", get_predicted_language(audio_file))
+
 
 def check_language_match(audio_path, language_text):
     predicted_label = get_predicted_language(audio_path)
     print("Predicted label:", predicted_label)
     # Compare predicted_label (e.g., "eng") with your target language text
     return "correct" if predicted_label.lower() == language_text.lower() else "false"
-
-
-if __name__ == "__main__":
-    audio_path = "data/test.wav"
-    location = r"C:\Users\Abhyuday Chauhan\PycharmProjects\LanguageDetectionError404\src\output\recording\recorded.wav"
-    import os
-    print(os.path.exists(location))
-    print(check_language_match(location, 'en'))
