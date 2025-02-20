@@ -10,8 +10,13 @@ First, run the project setup script to install dependencies and configure your e
 
 1. Open a regular PowerShell terminal.
 2. Execute the following command in the project directory:
+
    ```powershell
    .\setup.ps1
+   ```
+
+3. Open an **Administrator PowerShell Terminal**
+   ```
    # Install FFmpeg via Chocolatey
    choco install ffmpeg
    ```
@@ -23,13 +28,11 @@ This guide provides the steps to install FFmpeg using Chocolatey and then run th
 
 ---
 
-## Steps
+## Running the game
 
-1. **Open an Administrator PowerShell Terminal**
+**Run the following commands in the project directory**
 
-2. **Run the following commands in the same session:**
-
-   ```powershell
-   # Run the application
-   .\run.ps1
-   ```
+```powershell
+# Run the application
+.\run.ps1
+```
