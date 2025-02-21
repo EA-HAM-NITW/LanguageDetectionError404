@@ -5,7 +5,7 @@ from src.settings import WAVE_OUTPUT_FILE,DURATION
 from src.audio import check_language_match  # Function that processes the audio file
 
 
-GROUND_TRUTH = "Hello"  # Update this value as needed
+GROUND_TRUTH = "en"  # Update this value as needed
 
 
 def reset_app():
@@ -37,7 +37,7 @@ def app():
 
             # Output section
             st.subheader("Output:")
-            if detected_language == GROUND_TRUTH:
+            if detected_language == GROUND_TRUTH.lower():
                 st.success("Valid")
             else:
                 st.error("Invalid")

@@ -25,7 +25,7 @@ def get_predicted_language(audio_path: str) -> str:
         str: Detected language code (e.g., 'en' for English, 'fr' for French).
     """
     # Load the tiny model
-    model = whisper.load_model("tiny")
+    model = whisper.load_model("small")
     
     # Load and preprocess the audio file
     # whisper.load_audio loads the file and resamples it to 16kHz.
@@ -38,17 +38,16 @@ def get_predicted_language(audio_path: str) -> str:
     
     # Extract the language from the result dictionary.
     predicted_language = result.get("language", "unknown")
-    
+    print(f"DEBUG: Detected Language: {predicted_language}")
     return predicted_language
 
 # Example usage:
 if __name__ == "__main__":
-    audio_file = r"C:\Users\Abhyuday Chauhan\PycharmProjects\LanguageDetectionError404\src\output\recording\recorded.wav"
+    audio_file = r"D:\All github projects\ForeignLanguagedetectionMLHAMweek\src\output\recording\recorded.wav"
     print("Predicted Language:", get_predicted_language(audio_file))
 
 
 def check_language_match(audio_path, language_text):
     predicted_label = get_predicted_language(audio_path)
-    print("Predicted label:", predicted_label)
-    # Compare predicted_label (e.g., "eng") with your target language text
-    return "correct" if predicted_label.lower() == language_text.lower() else "false"
+    print(f"DEBUG: Predicted Language = {predicted_label}, Expected Language = {language_text}")
+    return predicted_label  # Always return the actual detected language
